@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admission Decision Predictor</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Admission Decision Predictor">
+  <meta name="author" content="walkerkq">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Admission Decision Predictor</h1>
+    <h2>Helping students plan for college</h2>
+    <p>walkerkq<br/>5/23/15</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Background</h2>
+  </hgroup>
+  <article data-timings="">
+    <h3>The Situation</h3>
+
+<p>As a moderately selecive college, we often find that prospective applicants often underestimate their chances of acceptance. We currently accept about 30% of applicants - a percentage that can be very intimidating.  </p>
+
+<p>We are in need of a way for prospective students and their guidance counselors to understand the academic profile&#39;s effect on admissions decisions, as well as help students chart out where they need to score and rank during their senior year in order to become more competitive applicants.  </p>
+
+<h3>The Solution</h3>
+
+<p>To meet our needs, we have designed a predictor where a prospective student or guidance counselor can input a student&#39;s academic profile and in return, receive an estimated chance of acceptance.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>How it Works</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>The predictor is based on a representative sample (50 fictional applicants) containing GPA, ACT score, class rank and whether the applicant was accepted or not.  </p>
+
+<p>The data set contains the following variables:  </p>
+
+<ul>
+<li>ACT: ACT Score, int, range 15-36<br></li>
+<li>GPA: grade point average, num, range 0-4.0<br></li>
+<li>Class.Rank: student&#39;s academic rank, num, 0-1<br></li>
+<li>Admission.Decision: where 1 represents admission granted and 0 represents denial of admission </li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>How it Works</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>A look at the sample data:  </p>
+
+<pre><code class="r">admission &lt;- read.csv(&quot;assets/sample_admission_data.csv&quot;, stringsAsFactors=FALSE)
+</code></pre>
+
+<pre><code>## Warning in file(file, &quot;rt&quot;): cannot open file
+## &#39;assets/sample_admission_data.csv&#39;: No such file or directory
+</code></pre>
+
+<pre><code>## Error in file(file, &quot;rt&quot;): cannot open the connection
+</code></pre>
+
+<pre><code class="r">head(admission)
+</code></pre>
+
+<pre><code>##   ACT  GPA Class.Rank Admission.Decision
+## 1  15 1.94     0.4327                  0
+## 2  16 2.88     0.4903                  0
+## 3  17 2.34     0.5379                  0
+## 4  18 3.45     0.1892                  1
+## 5  19 3.01     0.2600                  0
+## 6  20 2.95     0.5725                  0
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>How it Works</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>We then fit a linear model to the data. The model accounts for 85% of admission variance. The remaining effect is partly due to the student&#39;s essay and recommendations.  </p>
+
+<pre><code class="r">fit &lt;- lm(Admission.Decision ~ . - 1, admission)
+summary(fit)
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Admission.Decision ~ . - 1, data = admission)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.77546 -0.07464 -0.02135  0.18506  0.87994 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## ACT         0.001440   0.009688   0.149  0.88252    
+## GPA         0.256037   0.076183   3.361  0.00155 ** 
+## Class.Rank -1.250604   0.219825  -5.689 7.93e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.3208 on 47 degrees of freedom
+## Multiple R-squared:  0.8535, Adjusted R-squared:  0.8441 
+## F-statistic: 91.24 on 3 and 47 DF,  p-value: &lt; 2.2e-16
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>Summary</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>This app is meant only to estimate a student&#39;s chances of being accepted based on their academic profile - in order to help students plan our their academic goals for their final year of high school or determine their plans for college applications. Students should not underestimate the effect of good recommendations and a strong essay.    </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-6" style="background:;">
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Background'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='How it Works'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='How it Works'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='How it Works'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Summary'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title=''>
+         6
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>

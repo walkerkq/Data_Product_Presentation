@@ -1,0 +1,65 @@
+---
+title       : Admission Decision Predictor 
+subtitle    : Helping students plan for college
+author      : walkerkq
+job         : 5/23/15
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Background  
+
+### The Situation  
+As a moderately selecive college, we often find that prospective applicants often underestimate their chances of acceptance. We currently accept about 30% of applicants - a percentage that can be very intimidating.  
+
+We are in need of a way for prospective students and their guidance counselors to understand the academic profile's effect on admissions decisions, as well as help students chart out where they need to score and rank during their senior year in order to become more competitive applicants.  
+
+### The Solution
+
+To meet our needs, we have designed a predictor where a prospective student or guidance counselor can input a student's academic profile and in return, receive an estimated chance of acceptance.
+
+--- 
+
+## How it Works
+
+The predictor is based on a representative sample (50 fictional applicants) containing GPA, ACT score, class rank and whether the applicant was accepted or not.  
+
+The data set contains the following variables:  
+- ACT: ACT Score, int, range 15-36  
+- GPA: grade point average, num, range 0-4.0  
+- Class.Rank: student's academic rank, num, 0-1  
+- Admission.Decision: where 1 represents admission granted and 0 represents denial of admission 
+
+---
+
+## How it Works  
+
+A look at the sample data:  
+
+```{r showFit}
+admission <- read.csv("assets/sample_admission_data.csv", stringsAsFactors=FALSE)
+head(admission)
+```
+
+--- 
+
+## How it Works
+
+We then fit a linear model to the data. The model accounts for 85% of admission variance. The remaining effect is partly due to the student's essay and recommendations.  
+
+```{r showModel}
+fit <- lm(Admission.Decision ~ . - 1, admission)
+summary(fit)
+```
+
+---  
+
+## Summary  
+
+This app is meant only to estimate a student's chances of being accepted based on their academic profile - in order to help students plan our their academic goals for their final year of high school or determine their plans for college applications. Students should not underestimate the effect of good recommendations and a strong essay.    
+
+---  
